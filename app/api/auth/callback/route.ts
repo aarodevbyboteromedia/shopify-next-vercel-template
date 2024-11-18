@@ -14,33 +14,46 @@ export async function GET(req: Request) {
   const shop = url.searchParams.get("shop");
   const host = url.searchParams.get("host");
 
-  // todo: validate hmac
-
-  if (!shop) {
-    throw new Error("No shop provided");
+  // Validar parámetros esenciales
+  if (!shop || !host) {
+    return new NextResponse("Missing required parameters (shop or host)", {
+      status: 400,
+    });
   }
 
   try {
+    // Realizar el callback de autenticación
     const callbackResponse = await shopify.auth.callback<Session>({
       rawRequest: req,
     });
 
     const { session } = callbackResponse;
 
+    // Verificar si la sesión es válida
     if (!session || !session.accessToken) {
-      throw new Error("Could not validate auth callback");
+      throw new Error("Could not validate auth callback. Session or access token missing.");
     }
 
+    // Guardar la sesión en la base de datos
     await storeSession(session);
 
-    await shopify.webhooks.register({ session });
+    // Registrar webhooks para la tienda autenticada
+    const webhookResponse = await shopify.webhooks.register({ session });
 
-    const sanitizedHost = shopify.utils.sanitizeHost(host || "");
-    if (!host || host == null) {
-      return new NextResponse("Missing host parameter", { status: 400 });
+    if (webhookResponse.userErrors.length > 0) {
+      console.warn("Webhook registration errors:", webhookResponse.userErrors);
     }
 
-    let redirectUrl = `/?shop=${session.shop}&host=${encodeURIComponent(sanitizedHost!)}`;
+    // Sanitizar el host para evitar problemas de seguridad
+    const sanitizedHost = shopify.utils.sanitizeHost(host);
+    if (!sanitizedHost) {
+      return new NextResponse("Invalid host parameter", { status: 400 });
+    }
+
+    // Redirigir al panel de la app
+    let redirectUrl = `/?shop=${session.shop}&host=${encodeURIComponent(
+      sanitizedHost
+    )}`;
     if (shopify.config.isEmbeddedApp) {
       redirectUrl = await shopify.auth.getEmbeddedAppUrl({
         rawRequest: req,
@@ -50,16 +63,17 @@ export async function GET(req: Request) {
 
     return NextResponse.redirect(redirectUrl);
   } catch (e: any) {
-    console.warn(e);
+    console.error("Error during OAuth callback:", e);
+
     switch (true) {
       case e instanceof InvalidOAuthError:
         return new NextResponse(e.message, { status: 403 });
       case e instanceof CookieNotFound:
       case e instanceof InvalidSession:
-        // This is likely because the OAuth session cookie expired before the merchant approved the request
-        return beginAuth(shop!, req, false);
+        // Si el cookie expira antes de aprobar, reiniciar la autenticación
+        return beginAuth(shop, req, false);
       default:
-        return new NextResponse("An error occurred", { status: 500 });
+        return new NextResponse("An unexpected error occurred", { status: 500 });
     }
   }
 }

@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "22126b204b9b804f175588ea775aa94d"
-application_url = "https://involve-labs-antivirus-ea.trycloudflare.com"
+application_url = "https://nearby-cingular-handed-ira.trycloudflare.com"
 embedded = true
 name = "pixelote"
 handle = "pixelote"
@@ -19,9 +19,9 @@ scopes = ""
 
 [auth]
 redirect_urls = [
-  "https://involve-labs-antivirus-ea.trycloudflare.com/auth/callback",
-  "https://involve-labs-antivirus-ea.trycloudflare.com/auth/shopify/callback",
-  "https://involve-labs-antivirus-ea.trycloudflare.com/api/auth/callback"
+  "https://nearby-cingular-handed-ira.trycloudflare.com/auth/callback",
+  "https://nearby-cingular-handed-ira.trycloudflare.com/auth/shopify/callback",
+  "https://nearby-cingular-handed-ira.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
