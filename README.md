@@ -1,164 +1,198 @@
 # Shopify App Template - Next.js App Router
 
-This is a template for building a [Shopify app](https://shopify.dev/apps/getting-started) using Next.js and Typescript. It contains the basics for building a Shopify app on Next.js using the app router and server components.
+Este es un template para construir una [aplicación de Shopify](https://shopify.dev/apps/getting-started) utilizando **Next.js** y **TypeScript**. Contiene lo básico para desarrollar una aplicación de Shopify en Next.js utilizando el **App Router** y **componentes de servidor**.
 
-## Features
+This is a template for building a [Shopify app](https://shopify.dev/apps/getting-started) using **Next.js** and **TypeScript**. It contains the essentials for building a Shopify app on Next.js using the **App Router** and **server components**.
 
-- **Next.js**: Using the latest app router and server components.
-- **Prisma**: For managing database connections and migrations.
-- **Apollo**: For interacting with the Shopify GraphQL API.
-- **App Bridge v4**: For authenticating API requests in the frontend.
-- **Shopify API library**: For managing OAuth on the serverless backend.
-- **Polaris React**: For building high quality, consistent experiences for Shopify merchants.
-- **Tailwind CSS**: For fast, flexible styling and design.
-- **Docker**: For setting up the postgres database for local development.
-- **Graphql-Codegen**: For generating types for graphql queries and mutations.
+## Features / Características
 
-### Installing the template
+- **Next.js**: Utiliza el último App Router y componentes de servidor.
+- **Prisma**: Para gestionar conexiones a la base de datos y migraciones.
+- **Apollo**: Para interactuar con la API GraphQL de Shopify.
+- **App Bridge v4**: Para autenticar solicitudes de API en el frontend.
+- **Shopify API Library**: Para gestionar OAuth en el backend sin servidor.
+- **Polaris React**: Para construir experiencias de alta calidad y consistentes para los comerciantes de Shopify.
+- **Tailwind CSS**: Para estilos y diseño rápidos y flexibles.
+- **Docker**: Para configurar la base de datos PostgreSQL para desarrollo local.
+- **GraphQL Codegen**: Para generar tipos para consultas y mutaciones GraphQL.
+
+## Installing the Template / Instalación del Template
+
+Este template puede ser instalado usando tu gestor de paquetes preferido:
 
 This template can be installed using your preferred package manager:
 
-Using pnpm (recommended):
+### Using pnpm (Recommended) / Usando pnpm (Recomendado):
 
-```shell
-pnpx @shopify/create-app@latest --template https://github.com/ozzyonfire/shopify-next-app.git
-```
+pnpx @shopify/create-app@latest --template https://github.com/aarodevbyboteromedia/shopify-next-vercel-template.git
 
-Using yarn:
+### Using yarn / Usando yarn:
 
-```shell
-yarn create @shopify/app --template https://github.com/ozzyonfire/shopify-next-app.git
-```
+yarn create @shopify/app --template https://github.com/aarodevbyboteromedia/shopify-next-vercel-template.git
 
-Using npx:
+### Using npx / Usando npx:
 
-```shell
-npx @shopify/create-app@latest --template https://github.com/ozzyonfire/shopify-next-app.git
-```
+npx @shopify/create-app@latest --template https://github.com/aarodevbyboteromedia/shopify-next-vercel-template.git
+
+Esto clonará el template e instalará las dependencias necesarias.
 
 This will clone the template and install the required dependencies.
 
-## Next.js and Shopify Embedded Apps
+## Next.js and Shopify Embedded Apps / Next.js y Aplicaciones Integradas de Shopify
 
-The goal of this template is to provide a quick and easy way to spin up a Shopify Embedded App that uses the Next.js app router platform. Some of the following information was previusly necessary for the `pages` router, so I am working on migrating some of the legacy code.
+El objetivo de este template es proporcionar una manera rápida y fácil de iniciar una Aplicación Integrada de Shopify que utiliza la plataforma App Router de Next.js. Parte de la información siguiente era previamente necesaria para el router pages, por lo que estoy trabajando en migrar algo del código legado.
 
-### Providers
+The goal of this template is to provide a quick and easy way to spin up a Shopify Embedded App that uses the Next.js App Router platform. Some of the following information was previously necessary for the pages router, so I am working on migrating some of the legacy code.
 
-- in `layout.tsx` we setup some providers that are necessary for the app to run.
-  - **ApolloProvider**: (Optional) Sets up the Apollo context for running Graphql queries and mutations. This runs through the `/api/graphql` Next.js route and is handled by the Shopify API library.
-  - **SessionProvider**: (Optional) This ensures that the user always has an active session and that the app is installed correctly. It basically redirects the user to authenticate when it needs to.
+### Providers / Proveedores
 
-### OAuth
+En layout.tsx configuramos algunos proveedores que son necesarios para que la aplicación funcione.
 
-### Token exchange
+In layout.tsx we set up some providers that are necessary for the app to run.
+
+- **ApolloProvider**: (Opcional) Configura el contexto de Apollo para ejecutar consultas y mutaciones GraphQL. Esto se maneja a través de la ruta /api/graphql de Next.js y es gestionado por la librería Shopify API.
+
+- **SessionProvider**: (Opcional) Asegura que el usuario siempre tenga una sesión activa y que la aplicación esté instalada correctamente. Básicamente redirige al usuario para autenticar cuando es necesario.
+
+## OAuth
+
+### Token Exchange / Intercambio de Token
+
+La plantilla de la aplicación usa intercambio de tokens por defecto. El usuario obtiene el ID Token desde la carga inicial de la página y lo envía al servidor donde se almacena. Esto ocurre usando una acción del servidor.
 
 The app template uses token exchange by default. The user gets the ID Token from the initial page load and sends it to the server where it is stored. This happens using a server action.
 
-Also, all server actions should have the session token sent along with them, the server can then verify and exchange the token if needed.
+Además, todas las acciones del servidor deben enviar el token de sesión junto con ellas, para que el servidor pueda verificar e intercambiar el token si es necesario.
 
-### OAuth (old way - to be deprecated)
+Also, all server actions should have the session token sent along with them, so the server can verify and exchange the token if needed.
 
-OAuth is handled using the `/api/auth` and `/api/auth/callback` routes. The app is setup to use both online and offline tokens, by default.
+### OAuth (Método antiguo - Por Deprecar)
 
-_Note that in order to use the `/api/graphql` route out of the box, you need to use **online** tokens._
+OAuth se maneja usando las rutas /api/auth y /api/auth/callback. La aplicación está configurada para usar tokens tanto en línea como fuera de línea, por defecto.
 
-### Environment Variables
+OAuth is handled using the /api/auth and /api/auth/callback routes. The app is set up to use both online and offline tokens by default.
 
-There are a couple environment variables you need to set up in order for the app to run. Create a file called `.env` in the root directory (or the root of your Next.js app) and add the following lines;
+> Nota: Para usar la ruta /api/graphql directamente, necesitas usar tokens en línea.
 
-```bash
-DATABASE_URL= # database connection string - for connecting to prisma
-POSTGRES_PASSWORD= # optional database password - when running postgres db locally through docker
-```
+## Environment Variables / Variables de Entorno
+
+Hay varias variables de entorno que necesitas configurar para que la aplicación funcione. Crea un archivo llamado .env en el directorio raíz (o en la raíz de tu aplicación Next.js) y añade las siguientes líneas:
+
+There are a couple of environment variables you need to set up in order for the app to run. Create a file called .env in the root directory (or the root of your Next.js app) and add the following lines:
+
+DATABASE_URL= # Cadena de conexión a la base de datos - para conectar con Prisma
+POSTGRES_PASSWORD= # Contraseña opcional de la base de datos - al ejecutar la base de datos PostgreSQL localmente a través de Docker
+
+Las dos primeras variables son pobladas automáticamente por la Shopify CLI.
 
 The first two variables are automatically populated by the Shopify CLI.
 
+> **Importante**: Recuerda cambiar la información en shopify.app.toml y asegurar que el archivo .env esté correctamente configurado.
+
 ## Todo
 
-- ✅ Session saving using MongoDB
-- ✅ OAuth flow for online and offline tokens
-- ✅ GraphQl call using Apollo
-- ✅ New router config for Next.js and App Bridge
-- ✅ AppUninstalled webhook - cleanup and delete sessions
-- ✅ Database sessions managed through Prisma
-- ✅ Remove the APIProvider and use fetch instead
-- ⬜ Prune excess leftover unused code
+- ✅ Guardado de sesión usando MongoDB
+- ✅ Flujo de OAuth para tokens en línea y fuera de línea
+- ✅ Llamada a GraphQL usando Apollo
+- ✅ Nueva configuración del router para Next.js y App Bridge
+- ✅ Webhook de AppUninstalled - Limpieza y eliminación de sesiones
+- ✅ Sesiones de base de datos gestionadas a través de Prisma
+- ✅ Eliminar APIProvider y usar fetch en su lugar
+- ⬜ Eliminar código sobrante no utilizado
 
 ## Tech Stack
 
-This template combines a number of third party open-source tools:
+Este template combina una serie de herramientas de terceros de código abierto:
 
-- [Next.js](https://nextjs.org/) builds the [React](https://reactjs.org/) frontend.
+This template combines a number of third-party open-source tools:
 
-The following Shopify tools complement these third-party tools to ease app development:
+- **Next.js**: Construye el frontend en React.
+- **Shopify API Library**: Gestiona OAuth en el backend sin servidor.
+- **App Bridge React**: Añade autenticación a las solicitudes de API en el frontend.
+- **Apollo**: Para interactuar con la API GraphQL de Shopify (Opcional).
+- **Polaris React**: Sistema de diseño y biblioteca de componentes.
+- **Prisma**: Para gestionar conexiones a la base de datos y migraciones.
 
-- [Shopify API library](https://github.com/Shopify/shopify-api-js?tab=readme-ov-file) manages OAuth on the serverless backend. This lets users install the app and grant scope permissions.
-- [App Bridge React](https://shopify.dev/apps/tools/app-bridge/getting-started/using-react) adds authentication to API requests in the frontend and renders components outside of the App’s iFrame.
-- [Apollo](https://www.apollographql.com/) for interacting with the Shopify GraphQL API (Optional).
-- [Polaris React](https://polaris.shopify.com/) is a powerful design system and component library that helps developers build high quality, consistent experiences for Shopify merchants.
-- [Prisma](https://www.prisma.io/) for managing database connections and migrations.
+## Getting Started / Primeros Pasos
 
-## Getting started
+### Local Development / Desarrollo Local
 
-### Local Development
-
-[The Shopify CLI](https://shopify.dev/apps/tools/cli) connects to an app in your Partners dashboard. It provides environment variables, runs commands in parallel, and updates application URLs for easier development.
+La Shopify CLI se conecta a una aplicación en tu panel de Partners. Proporciona variables de entorno, ejecuta comandos en paralelo y actualiza las URLs de la aplicación para facilitar el desarrollo.
 
 You can develop locally using your preferred package manager.
 
-Using pnpm:
+Puedes desarrollar localmente usando tu gestor de paquetes preferido.
 
-```shell
 pnpm run dev
-```
 
-#### Docker for local development
+### Docker para Desarrollo Local
 
-You can also get up and running with Docker. This will setup and initialize the postgres database for you.
+También puedes configurar y ejecutar la base de datos PostgreSQL localmente usando Docker:
 
-```shell
 docker-compose up
 pnpm run migrate
-```
 
-#### Graphql-Codegen
+### GraphQL Codegen
 
-If you run the following command, it will generate the types for the graphql queries and mutations.
+Si ejecutas el siguiente comando, generará los tipos para las consultas y mutaciones GraphQL:
 
-```shell
 pnpm run graphql-codegen
-```
 
-This sets up your types when using Apollo client and gives your intellisense in your IDE.
+### Actualizar Prisma y Dependencias
 
-## Deployment
+Después de conectar la base de datos, asegúrate de actualizar Prisma y las dependencias:
 
-You can deploy this app to a hosting service of your choice. Here is the basic setup for deploying to Vercel:
+pnpm update
+pnpm install
 
-- Create you Shopify App in the Shopify Partners Dashboard
-- Create your project on Vercel and add the environment variables from your Shopify App
-  - `SHOPIFY_API_KEY`
-  - `SHOPIFY_API_SECRET`
-  - `SCOPES`
-  - `HOST`
-  - Any database connection strings
-- Setup your Shopify App to have the same `/api/auth/callback` and `/api/auth` routes as your Vercel deployment (with your hostname)
+### Prune Código Innecesario
 
-Vercel should be setup to build using the default Next.js build settings.
+Una vez que hayas configurado todo, es recomendable eliminar el código sobrante:
 
-You should also be using a managed Shopify deployment. This will handle scope changes on your app.
+pnpm run prune
 
-```shell
+## Deployment / Despliegue
+
+Puedes desplegar esta aplicación a un servicio de hosting de tu elección. Aquí está la configuración básica para desplegar en Vercel:
+
+1. Crea tu Aplicación de Shopify en el Dashboard de Partners de Shopify.
+2. Crea tu proyecto en Vercel y añade las variables de entorno:
+   - SHOPIFY_API_KEY
+   - SHOPIFY_API_SECRET
+   - SCOPES
+   - HOST
+   - Cadenas de conexión a la base de datos
+3. Configura las rutas de callback en tu Aplicación de Shopify
+4. Despliega usando:
+
 pnpm run deploy
-```
 
-### Application Storage
+## Application Storage / Almacenamiento de la Aplicación
 
-This template uses Prisma to store and manage sessions. For more information on how to set up Prisma, see the [Prisma documentation](https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch-typescript-postgres).
+Esta plantilla usa Prisma para almacenar y gestionar sesiones.
 
-## Developer resources
+## Developer Resources / Recursos para Desarrolladores
 
-- [Introduction to Shopify apps](https://shopify.dev/apps/getting-started)
-- [App authentication](https://shopify.dev/apps/auth)
+- [Introducción a las aplicaciones de Shopify](https://shopify.dev/apps/getting-started)
+- [Autenticación de aplicaciones](https://shopify.dev/apps/auth)
 - [Shopify CLI](https://shopify.dev/apps/tools/cli)
-- [Shopify API Library documentation](https://github.com/Shopify/shopify-api-node/tree/main/docs)
+- [Documentación de la Shopify API Library](https://github.com/Shopify/shopify-node-api)
+
+## Recordatorios Importantes
+
+### Actualizar shopify.app.toml
+
+Asegúrate de actualizar el archivo shopify.app.toml con la información correcta de tu aplicación.
+
+### Configurar el Archivo .env
+
+El archivo .env es crucial para la configuración de tu aplicación.
+
+### Actualizar Prisma Después de Conectar la Base de Datos
+
+pnpm run migrate
+
+### Mantener las Dependencias Actualizadas
+
+pnpm update
+pnpm install
