@@ -1,4 +1,4 @@
-# Shopify App Template - Next.js App Router
+## Shopify App Template - Next.js App Router
 
 Este es un template para construir una [aplicación de Shopify](https://shopify.dev/apps/getting-started) utilizando **Next.js** y **TypeScript**. Contiene lo básico para desarrollar una aplicación de Shopify en Next.js utilizando el **App Router** y **componentes de servidor**.
 
@@ -153,19 +153,38 @@ pnpm run prune
 
 ## Deployment / Despliegue
 
-Puedes desplegar esta aplicación a un servicio de hosting de tu elección. Aquí está la configuración básica para desplegar en Vercel:
+Puedes desplegar esta aplicación a un servicio de hosting de tu elección. Aquí está la configuración para desplegar en Vercel:
 
 1. Crea tu Aplicación de Shopify en el Dashboard de Partners de Shopify.
-2. Crea tu proyecto en Vercel y añade las variables de entorno:
+2. Crea tu proyecto en Vercel y conecta tu repositorio de GitHub.
+3. En el dashboard de Vercel, ve a "Storage" y crea una nueva base de datos Neon PostgreSQL.
+4. Una vez creada, Vercel te proporcionará automáticamente la variable de entorno DATABASE_URL.
+5. Añade las siguientes variables de entorno en la configuración del proyecto en Vercel:
    - SHOPIFY_API_KEY
    - SHOPIFY_API_SECRET
    - SCOPES
-   - HOST
-   - Cadenas de conexión a la base de datos
-3. Configura las rutas de callback en tu Aplicación de Shopify
-4. Despliega usando:
+   - HOST (URL de tu aplicación en Vercel)
+   - Las demás variables de entorno necesarias para tu aplicación
+6. En la sección de Build & Development Settings:
+   - Build Command: `prisma generate && next build`
+   - Output Directory: `.next`
+7. Configura las rutas de callback en tu Aplicación de Shopify para que apunten a tu dominio de Vercel
+8. Despliega usando el botón "Deploy" en Vercel o mediante:
 
 pnpm run deploy
+
+### Configuración Adicional para Neon en Vercel
+
+1. Asegúrate de que tu schema.prisma esté configurado para soportar Neon:
+
+datasource db {
+provider = "postgresql"
+url = env("DATABASE_URL")
+directUrl = env("DIRECT_URL") // Solo necesario si usas Neon serverless
+}
+
+2. Si usas Neon serverless, añade también la variable DIRECT_URL que Vercel te proporciona
+3. Después de cada despliegue, las migraciones se ejecutarán automáticamente gracias al build command configurado
 
 ## Application Storage / Almacenamiento de la Aplicación
 
