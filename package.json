@@ -1,5 +1,5 @@
 {
-  "name": "pixelote",
+  "name": "reportes-store-bm",
   "version": "2.0.1",
   "main": "web/dist/index.js",
   "license": "MIT",
@@ -52,5 +52,8 @@
     "prisma",
     "template"
   ],
-  "private": true
+  "private": true,
+  "workspaces": [
+    "extensions/*"
+  ]
 }
